@@ -1,7 +1,7 @@
 #!/usr/bin/python2.7
 ############################################################################
 # simulation.py
-# program for genertating simulated sequence using a kth order markov chain
+# program for generating simulated sequence using a kth order markov chain
 # Written by: Jiajun Wang
 # Date: Aug. 21, 2013
 # Email: wangj29@miamioh.edu
@@ -9,6 +9,7 @@
 import random
 import argparse
 import unittest
+import sys
 from Bio import SeqIO
 
 def ProbTuple(Mark,kmo):
@@ -25,7 +26,7 @@ def ProbTuple(Mark,kmo):
     return tlist
     
 #return the index of the first base without 'N' in following it for k length 
-def NextIndex(i,k):
+def NextIndex(i,k,inSeq): # Should be having inSeq as a parameter
     while i<len(inSeq) and inSeq[i]=='N':
         i+=1
     if i+k>=len(inSeq):
@@ -34,10 +35,10 @@ def NextIndex(i,k):
     if 'N' in inSeq[i:i+k+1]:
         while inSeq[i]!='N':
             i+=1
-        return NextIndex(i,k)
+        return NextIndex(i,k,inSeq)
     return i  
    
-def Markov(k):
+def Markov(k,inSeq): # inSeq as parameter?
     """Create Markov chain
     Input: k is the degree of the Markov chain
     """
@@ -45,7 +46,7 @@ def Markov(k):
     mask=(1<<((k+1)*2))-1
     t=0
     #get first k+1 subsequence
-    i=NextIndex(0,k)
+    i=NextIndex(0,k,inSeq)
     for j in range(k+1):
         t=(t<<2) | fn[inSeq[i+j]]
     Mark[t] = 1
@@ -53,7 +54,7 @@ def Markov(k):
     i += k+1     
     while i<len(inSeq) : 
         if inSeq[i]=='N':
-             i=NextIndex(i,k)
+             i=NextIndex(i,k,inSeq)
              if (i+k)>=len(inSeq):
                  break
              t=0
@@ -86,13 +87,14 @@ gn={
 }
 
 
-def create_markov_chain(chr_file. k):
+def create_markov_chain(chr_file, k):
     """
     Input: 
     * A .fa file containing a single sequences
     * An integer k specifying the degree of the Markov chain
     Output: A markov chain for use in the simulation
     """
+   
     
     pass
 
@@ -122,7 +124,7 @@ def go(args):
         n = args.length
     else:
         n = len(inSeq)
-    #Zero Marcov probabilities list
+    #Zero Markov probabilities list
     total=0
     base_count={}
     for i in range(4):   
@@ -143,7 +145,7 @@ def go(args):
               newBase += 1      
           simSeqStr += gn[newBase]
           key = (key<<2) | newBase     
-          plist = Markov(i)
+          plist = Markov(i, inSeq)
           sublist=plist[key]
 
     #generate the rest sequence using kth Markov prob         
@@ -170,24 +172,58 @@ def go(args):
 
 class Tester(unittest.TestCase):
     def testProbTuple(self):
+        
         """
         1. Create the inputs that will be passed into ProbTuple
         2. Plug inputs into ProbTuple and run ProbTuple
         3. Obtain output from ProbTuple
         4. Compare output from ProbTuple with expected output (look at self.assert)
-        """
-        inVars = [0]*4
-        kmo = 2
-        
+        """    
+        # mark = [0]*4
+        # kmo =1 
+        # result = ProbTuple(mark,kmo)
+        #expectedOutput = 
+        # self.assertEquals(result,expectedOutput)
+        pass
+
+    def testNextIndex(self):
+       i = 1
+       k = 0
+       inSeq = "ACGT"
+       result = NextIndex(i,k,inSeq)
+       expectedOutput = len(inSeq) 
+       self.assertEquals(result,expectedOutput)
+       pass
+
+    def testMarkov(self):
+       # k = 5
+       # result = Markov(k)
+       # expectedOutput = 
+       # self.assertEquals(result,expectedOutput)
         pass
 
 if __name__=='__main__':
     parser = argparse.ArgumentParser(description="Generate Simulated Sequence")
-    parser.add_argument('seq',action='store',help="sequence fasta file")     
-    parser.add_argument('-k',action='store',dest='k',type=int,default=5,help="order of Markov chain, default is 5")     
-    parser.add_argument('-l','--length',action='store',dest='length',type=int,help="length of sequence, same as the orginal sequence by default") 
-    parser.add_argument('-n','--name',action='store',dest='name',help="name of simulated sequence")
+    parser.add_argument(\
+        '--seq',action='store',required=False,
+        help="sequence fasta file")     
+    parser.add_argument(\
+        '-k',action='store',dest='k',type=int,default=5,
+        help="order of Markov chain, default is 5")     
+    parser.add_argument(\
+        '-l','--length',action='store',dest='length',type=int,
+        help="length of sequence, same as the orginal sequence by default") 
+    parser.add_argument(\
+        '-n','--name',action='store',dest='name',
+        help="name of simulated sequence")
+    parser.add_argument(\
+        '--test',action='store_const',const=True,
+        help="name of simulated sequence")
+    
     args = parser.parse_args()
 
-
-
+    if (args.test == True):
+        del sys.argv[1:]
+        unittest.main()
+    else:
+        go()
