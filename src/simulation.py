@@ -8,6 +8,7 @@
 
 import random
 import argparse
+import unittest
 from Bio import SeqIO
 
 def ProbTuple(Mark,kmo):
@@ -37,6 +38,9 @@ def NextIndex(i,k):
     return i  
    
 def Markov(k):
+    """Create Markov chain
+    Input: k is the degree of the Markov chain
+    """
     Mark= [0]*(4**(k+1))   
     mask=(1<<((k+1)*2))-1
     t=0
@@ -82,13 +86,33 @@ gn={
 }
 
 
-if __name__=='__main__':
-    parser = argparse.ArgumentParser(description="Generate Simulated Sequence")
-    parser.add_argument('seq',action='store',help="sequence fasta file")     
-    parser.add_argument('-k',action='store',dest='k',type=int,default=5,help="order of Markov chain, default is 5")     
-    parser.add_argument('-l','--length',action='store',dest='length',type=int,help="length of sequence, same as the orginal sequence by default") 
-    parser.add_argument('-n','--name',action='store',dest='name',help="name of simulated sequence")
-    args = parser.parse_args()
+def create_markov_chain(chr_file. k):
+    """
+    Input: 
+    * A .fa file containing a single sequences
+    * An integer k specifying the degree of the Markov chain
+    Output: A markov chain for use in the simulation
+    """
+    
+    pass
+
+
+def create_simulated_sequence(M, l):
+    """
+    Input:
+    * M: A markov chain (as created by create_markov_chain)
+    * l: Length of the sequence
+    Output:
+    * A simulated sequence of length l
+    """
+
+    
+    pass
+
+def go(args):
+    """
+    Place the main code (everything except for argparser code) in here
+    """
     k=args.k
     handle = open(args.seq)
     seq_record = SeqIO.read(handle,"fasta")
@@ -142,3 +166,28 @@ if __name__=='__main__':
     fo.write(">"+seqName[:seqName.find('.')]+"\n")        
     fo.write(simSeqStr)
     fo.close()
+
+
+class Tester(unittest.TestCase):
+    def testProbTuple(self):
+        """
+        1. Create the inputs that will be passed into ProbTuple
+        2. Plug inputs into ProbTuple and run ProbTuple
+        3. Obtain output from ProbTuple
+        4. Compare output from ProbTuple with expected output (look at self.assert)
+        """
+        inVars = [0]*4
+        kmo = 2
+        
+        pass
+
+if __name__=='__main__':
+    parser = argparse.ArgumentParser(description="Generate Simulated Sequence")
+    parser.add_argument('seq',action='store',help="sequence fasta file")     
+    parser.add_argument('-k',action='store',dest='k',type=int,default=5,help="order of Markov chain, default is 5")     
+    parser.add_argument('-l','--length',action='store',dest='length',type=int,help="length of sequence, same as the orginal sequence by default") 
+    parser.add_argument('-n','--name',action='store',dest='name',help="name of simulated sequence")
+    args = parser.parse_args()
+
+
+
