@@ -111,13 +111,12 @@ def create_simulated_sequence(M, l):
     
     pass
 
-def go(args):
+def go(record, k, length):
     """
     Place the main code (everything except for argparser code) in here
     """
     k=args.k
-    handle = open(args.seq)
-    seq_record = SeqIO.read(handle,"fasta")
+    seq_record = record
   
     inSeq=str(seq_record.seq).upper()
     if args.length:
