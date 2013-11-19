@@ -1,16 +1,17 @@
-from simulation import go
+#from simulation import go
 import re
 import Bio
+from Bio import SeqIO
+import random
 # import biopython libraries
 
 
 def main():
     # 1) Read in chr22.fa using biopython
 
-    from Bio.seq import SeqIO
     directory = "../genomes"
     genomeFile=directory+"/chr22.fa"
-    record = SeqIO.read(genomeFile, "FASTA")
+    record = SeqIO.read(genomeFile, "fasta")
     
     # 2) Generate a simulated sequence s using go()
     k = 5
@@ -18,7 +19,7 @@ def main():
     practice = list()
     genome = list(record.seq)
     # go(record, k, length)
-    for l in length:
+    for l in range(0,length):
         practice.append(random.sample(['A','G','C','T'], 1))
 
     
