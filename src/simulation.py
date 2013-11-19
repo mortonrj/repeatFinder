@@ -11,6 +11,7 @@ import argparse
 import unittest
 import sys
 from Bio import SeqIO
+from collections import Counter
 
 # def ProbTuple(Mark,kmo):
 #     total = 0
@@ -207,39 +208,51 @@ from Bio import SeqIO
 Increment variables in matrix
 """
 def countBases(seq,mat):
-    if "N" in seq:
-        return None
     for s in seq:
        mat[s]+=1
     return mat
 
+def enumerateSeqs(k):
+    bases = ['A', 'G', 'C', 'T']
+    if k == 1:
+        return bases
+    else:
+        seqs = []
+        for b in bases:
+            nucs = enumerateSeqs(k-1)
+            seqs+=[b+n for n in nucs]
+        return seqs
+    
 
 """divides every element in normalize by total"""
-def Normalize(mat, total,k):
+def Normalize(mat,k):
     baseCounts = {'A':0.0,'G':0.0,'C':0.0,'T':0.0}
     probMat = [baseCounts]*k
     bases = ['A', 'G', 'C', 'T']
-    for i in range(0,k):
-        for b in bases:
-            probMat[i][b] = mat[i][b]/total
-    return probMat
-"""
+    probMats = { x:dict() for x in bases }
+    for b in bases:
+        counts = mat[b]
+        total = sum(counts.values())
+        for k in mats.keys():
+            probMats[k] = float(mats[k])/total
+    return probMats
 
+"""
+Builds a KthMarkov model
 """
 def KthMarkov(k,seq):
     seq = seq.upper()
     window = [0]*k
     bases = {'A':0,'G':0,'C':0,'T':0}
-    mat = [bases]*k
-    total = 0
+    probMats = { x:Counter() for x in bases }
     for i in range(0,len(seq)-k):
         current = seq[i:i+k] #Current window
-        tempMat = countBases(current)
-        if(tempMat != None):
-            total += k
-            mat = tempMat
-    mat = Normalize(mat, total, k)        
-
+        if "N" not in current:            
+            head = current[-1]  #character being inspected
+            tail = current[:-1] #characters following head
+            probMats[head][tail] +=1                
+    probMats = Normalize(probMats, k)        
+    return probMats
 
 if __name__=='__main__':
     parser = argparse.ArgumentParser(description="Generate Simulated Sequence")
@@ -261,8 +274,25 @@ if __name__=='__main__':
     
     args = parser.parse_args()
 
-    if (args.test == True):
-        del sys.argv[1:]
-        unittest.main()
-    else:
+    if (args.test != True):
         go()
+    else:
+        del sys.argv[1:]
+
+
+        class TestEnumerate(unittest.TestCase):
+            def test(self):
+                s = enumerateSeqs(1)
+                self.assertEquals(s,["A","G","C","T"])
+
+                s = enumerateSeqs(2)
+                self.assertEquals(s,["AA","AG","AC","AT",
+                                     "GA","GG","GC","GT",
+                                     "CA","CG","CC","CT",
+                                     "TA","TG","TC","TT"])
+                s = enumerateSeqs(3)
+
+        class TestEnumerate(unittest.TestCase):
+            
+        unittest.main()
+                                 
