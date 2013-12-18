@@ -16,7 +16,7 @@ def main(seq,k,r,name):
     record = SeqIO.read(genomeFile, "fasta")
 
     # 2) Generate a simulated sequence s using go()
-    length = len( str(record))
+    length = len(record)
     newSeq = simulation.go(genomeFile, name, k, length)# Doesn't seem to making a long enough sequence
     newSeq = list(newSeq)
     print "Kth markov sequence: " + Seq("".join(newSeq))
@@ -27,18 +27,22 @@ def main(seq,k,r,name):
     repeatRec = open(repeatFile,'r')
 
     # Moving past first few lines of code
-    repeatRec.readline()
-    repeatRec.readline()
-    repeatRec.readline() 
+    # repeatRec.readline()
+    # repeatRec.readline()
+    # repeatRec.readline() 
+    
+    
+    lines = repeatRec.readlines()
+    for i in range(3,len(lines)):
+        line = lines[i]
 
-    # Reading in first repeat
-    line = repeatRec.readline()
-    line = line.rstrip()
-    toks = re.split("\s+", line)
+        # Reading in first repeat
+        line = line.rstrip()
+        toks = re.split("\s+", line)
 
-    #Replacing portions of s with portions of chr22.fa as dictated by lines of chr22.fa.out
-    start,end = int(toks[6]), int(toks[7])
-    newSeq[start:end] = list(record)[start:end]
+        #Replacing portions of s with portions of chr22.fa as dictated by lines of chr22.fa.out
+        start,end = int(toks[6]), int(toks[7])
+        newSeq[start:end] = list(record)[start:end]
     newSeq = Seq("".join(newSeq))
     print "Repeat: " + Seq("".join(list(record)[start:end]))
     print "New sequence: " + newSeq
@@ -54,7 +58,7 @@ if __name__ == "__main__":
    
     parser = argparse.ArgumentParser(description="Generate Simulated Sequence")
     parser.add_argument(\
-        '--seq',action='store',required=False,type = str,
+        '--seq',action='store',required=False,type = str,default = "test.fa",
         help="sequence fasta file")     
     parser.add_argument(\
         '-k',action='store',dest='k',type=int,default=5,
