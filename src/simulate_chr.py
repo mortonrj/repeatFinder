@@ -18,14 +18,14 @@ def main(seq,k,r,name,negative):
     # 2) Generate a simulated sequence s using go()
     length = len(record)
     newSeq = simulation.go(genomeFile, name, k, length)# Doesn't seem to making a long enough sequence
-    newSeq = list(newSeq)
+    newList = list(newSeq)
     print "Kth markov sequence: " + Seq("".join(newSeq))
 
-
+    
     #Read in chr22.fa.out  (using re.split("\s+", line))
     repeatFile =directory+"/test.fa.out"
     repeatRec = open(repeatFile,'r')
-
+    
     lines = repeatRec.readlines()
     for i in range(3,len(lines)):
         line = lines[i]
@@ -41,9 +41,9 @@ def main(seq,k,r,name,negative):
         else:
             #Replacing portions of s with portions of chr22.fa as dictated by lines of chr22.fa.out
             start,end = int(toks[6]), int(toks[7])
-            newSeq[start:end] = list(record)[start:end]
+            newList[start:end] = list(record)[start:end]
 
-        newSeq = Seq("".join(newSeq))
+        newSeq = Seq("".join(newList))
         print "New sequence: " + newSeq
 
 
