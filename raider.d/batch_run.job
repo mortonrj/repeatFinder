@@ -1,0 +1,19 @@
+#!/bin/bash 
+#PBS -N auto_RAIDER
+#PBS -m abe
+#PBS -l nodes=1:ppn=2:n09
+##PBS -l host=compute-1-4.local
+#PBS -l walltime=40:0:0
+
+##
+## Parameters (pass via qsub -v var1=value1,var2=value2 etc.):
+##
+## PBS_O_WORKDIR: System variable automatically set to your working directory.
+## DIR: Directory to print results in
+## RAIDER: Path to raider executable
+## SEED: PatternHunter style seed to be used
+## SEQUENCE: Path to FASTA sequence file
+##
+
+cd $PBS_O_WORKDIR
+/usr/bin/time -v -o $DIR/time.out $RAIDER $SEED $SEQUENCE $DIR -v > $DIR/console.out
