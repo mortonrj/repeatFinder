@@ -14,6 +14,9 @@
 ## SEED: PatternHunter style seed to be used
 ## SEQUENCE: Path to FASTA sequence file
 ##
-
 cd $PBS_O_WORKDIR
+DIR=.
+RAIDER=.
+SEED=1110110111
+SEQUENCE="../repeatFinder/genomes/test.fa"
 /usr/bin/time -v -o $DIR/time.out $RAIDER $SEED $SEQUENCE $DIR -v > $DIR/console.out
