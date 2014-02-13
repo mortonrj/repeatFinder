@@ -10,6 +10,8 @@ import subprocess
 import os
 import argparse
 
+raider_output_file = "raiderResults"
+
 def main(seqFile,outputDir):
 
     directory = "../genomes"
@@ -20,9 +22,9 @@ def main(seqFile,outputDir):
     raiderResults = outputDir
 
     #2) Running RepeatMasker
-    subprocess.call("module load RepeatMasker")
-    subprocess.call(["RepeatMasker", "-el", "raiderResults"])
-    
+    cmd = "module load RepeatMasker; RepeatMasker -el %s" % (raider_output_file)
+    # print(cmd)
+    subprocess.call(cmd.split(" "))
 
 if __name__ == "__main__":
 

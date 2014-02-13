@@ -8,7 +8,6 @@ from Bio.SeqRecord import SeqRecord
 import random
 
 
-
 def main(seq,k,r,name,negative):
     # 1) Read in sequence using biopython
     directory = "../genomes"
