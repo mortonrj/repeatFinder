@@ -4,59 +4,59 @@
 # program for generating consensus sequences
 # Written by: Rachael Morton
 
-import argparse
 import random
 import argparse
 import unittest
 import sys
 import Bio
+from Bio import Seq
 from Bio import SeqIO
 from collections import defaultdict
 
-def main():
+def get_consensus(elements_list, genome_string):
+    family_length = int(elements_list[0][5])-int(elements_list[0][4])
+    s = ""
+    D = {'A':0,'C':0,'G':0,'T':0,'X':0}
+    for column in range(family_length):
+        for L in element_list:
+            current_position = int(L[4]) + column
+            base = genome_string[current_position]
+            try:
+                D[base] += 1
+            except:
+                D['X'] += 1
+        best_base = max([(c,b) for b,c in D.items()])[1]
+        s += best_base
+    return s
+
+def main(seq,elements):  
     
     # 1) Read in sequence using biopython
-    directory = "../genomes"
-    genomeFile = directory+"/"+seq
-    record = SeqIO.read(genomeFile, "fasta")
+    genomeFile = seq
+    record = SeqIO.parse(genomeFile, "fasta")
+    genome_string = list(record)[0]
     
     # Opening elements file
-    elementFile = "../repeatFinder/raider/raider output/elements"
+    elementFile = elements
     f = open(elementFile, 'r')
-    lines = repeatRec.readlines()
-    t = dict()
-    
-    for i in range(1,len(lines)):
+    lines = [re.split("\s+", line.rstrip()) for line in f.readLines()]
+    num_families = int(lines[-1][0]) + 1
+
+    for family_num in range(0,num_families):
+        results.append((family_num,
+                        get_consensus([line for line in lines if int(L[0]) == family_num],genome_string)))
+
         
-        repeatList
-        line = lines[i]
-        line = line.rstrip()
-        toks = re.split("\s",line)
-        number = toks[0]
-        
-        #Finding repeat section from chr22.fa based on elements coordinates
-        start,end = int(toks[6]), int(toks[7])
-        repeat = list(record)[start:end]
-        
-        #logging repeat in dictionary
-        t[number] = repeat
-        consensus(t)
-
-def consensus(t):
-    consensusList = dict()
-    
-    firstNumber = t[dict.keys()[0]]
-    consensusList[firstNumber] = t[0]
-    for number in t:
-        if number == firstNumber:
-            
-        else:
-            firstNumber == number
-            consensusList[number] = t[number]
-
-
-
 if __name__ == "__main__":
 
-    main()
+    parser = argparse.ArgumentParser(description = "Generate Simulated Sequence")
+    parser.add_argument(\
+        '--seq',action='store',required=False,type=str,default="../genomes/chr22.fa",
+        help="sequence fasta file")
+    parser.add_argument(\
+        '--elements',action='store',required=False,type=str,
+        default="../repeatFinder/raider/raider_output/elements",
+        help = "elements file")
+    args = parser.parse_args()
+    main(args.seq,args.elements)
 
